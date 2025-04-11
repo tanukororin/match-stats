@@ -35,21 +35,21 @@
 
     /* ボタン色 */
     .btn-stats {
-      background-color: #4C8BF5;
+      background-color: #2c3e50; /* ダークブルーグレー */
       color: white;
     }
 
     .btn-stats:hover {
-      background-color: #3877d1;
+      background-color: #34495e; /* より暗いブルーグレー */
     }
 
     .btn-classes {
-      background-color: #28a745;
+      background-color: #16a085; /* モスグリーン */
       color: white;
     }
 
     .btn-classes:hover {
-      background-color: #218838;
+      background-color: #1abc9c; /* 明るいモスグリーン */
     }
 
     /* セクションタイトル */
@@ -57,12 +57,12 @@
       font-size: 1.25rem;
       font-weight: bold;
       margin-bottom: 20px;
-      color: #333;
+      color: #34495e; /* ダークブルーグレー */
     }
 
     .summary-text {
       font-size: 1rem;
-      color: #555;
+      color: #7f8c8d; /* 明るいグレー */
     }
 
     /* レスポンシブ対応 */
@@ -73,11 +73,11 @@
     }
   </style>
 </head>
-<body class="bg-gray-100 text-gray-800 min-h-screen flex items-center justify-center">
+<body class="bg-gray-900 text-gray-100 min-h-screen flex items-center justify-center">
 
-  <div class="w-full max-w-4xl p-8 space-y-8 bg-white rounded-lg shadow-lg">
+  <div class="w-full max-w-4xl p-8 space-y-8 bg-gray-800 rounded-lg shadow-xl">
     <!-- タイトル -->
-    <h1 class="text-4xl font-bold text-center text-blue-600">🏯 箱鯖攻城戦</h1>
+    <h1 class="text-4xl font-bold text-center text-indigo-400">🏯 箱鯖攻城戦</h1>
 
     <!-- メニューボタン -->
     <div class="space-y-4">
@@ -126,7 +126,7 @@
 
         Object.entries(data).forEach(([datetime, matches]) => {
           const section = document.createElement("div");
-          section.className = "bg-gray-100 p-6 rounded-lg shadow-md";
+          section.className = "bg-gray-700 p-6 rounded-lg shadow-md";
 
           const sectionTitle = document.createElement("h2");
           sectionTitle.className = "section-title";
