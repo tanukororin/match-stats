@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
@@ -6,7 +6,11 @@
   <title>箱鯖攻城戦</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* トグル展開アニメーション */
+    body {
+      background-color: #1a202c; /* ダークグレー背景 */
+      color: white;
+    }
+
     .toggle-content {
       max-height: 0;
       opacity: 0;
@@ -19,7 +23,6 @@
       opacity: 1;
     }
 
-    /* ボタンのスタイル */
     .btn {
       padding: 20px;
       font-size: 18px;
@@ -33,53 +36,53 @@
       box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
     }
 
-    /* ボタン色 */
     .btn-stats {
-      background-color: #2c3e50; /* ダークブルーグレー */
+      background-color: #4a5568;
       color: white;
     }
 
     .btn-stats:hover {
-      background-color: #34495e; /* より暗いブルーグレー */
+      background-color: #2d3748;
     }
 
     .btn-classes {
-      background-color: #16a085; /* モスグリーン */
+      background-color: #2b6cb0;
       color: white;
     }
 
     .btn-classes:hover {
-      background-color: #1abc9c; /* 明るいモスグリーン */
+      background-color: #2c5282;
     }
 
-    /* セクションタイトル */
     .section-title {
       font-size: 1.25rem;
       font-weight: bold;
       margin-bottom: 20px;
-      color: #34495e; /* ダークブルーグレー */
+      color: white;
+      cursor: pointer;
     }
 
     .summary-text {
       font-size: 1rem;
-      color: #7f8c8d; /* 明るいグレー */
+      color: white;
     }
 
-    /* レスポンシブ対応 */
-    @media (max-width: 640px) {
-      .btn {
-        width: 100%;
-      }
+    .container {
+      background-color: #2d3748;
+      border-radius: 12px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .entry-box {
+      background-color: #4a5568;
     }
   </style>
 </head>
-<body class="bg-gray-900 text-gray-100 min-h-screen flex items-center justify-center">
+<body class="min-h-screen flex items-center justify-center">
 
-  <div class="w-full max-w-4xl p-8 space-y-8 bg-gray-800 rounded-lg shadow-xl">
-    <!-- タイトル -->
-    <h1 class="text-4xl font-bold text-center text-indigo-400">🏯 箱鯖攻城戦</h1>
+  <div class="w-full max-w-4xl p-8 space-y-8 container">
+    <h1 class="text-4xl font-bold text-center">🏯 箱鯖攻城戦</h1>
 
-    <!-- メニューボタン -->
     <div class="space-y-4">
       <button id="toggleStatsBtn" class="btn btn-stats w-full text-xl">
         試合統計
@@ -89,14 +92,12 @@
       </button>
     </div>
 
-    <!-- トグル表示：試合統計データ -->
     <div id="statsSection" class="toggle-content">
       <div id="statsContainer" class="space-y-6"></div>
     </div>
   </div>
 
   <script>
-    // トグル動作
     const toggleStatsBtn = document.getElementById("toggleStatsBtn");
     const statsSection = document.getElementById("statsSection");
 
@@ -104,7 +105,6 @@
       statsSection.classList.toggle("open");
     });
 
-    // プレイヤーを2人ずつ改行して表示する関数
     function formatPlayers(playersObj) {
       const entries = Object.entries(playersObj);
       const lines = [];
@@ -115,7 +115,6 @@
       return lines.join("<br>");
     }
 
-    // JSONデータを読み込んで表示
     fetch("/match-stats/stats.json")
       .then(response => {
         if (!response.ok) throw new Error("ファイルの読み込みに失敗しました。");
@@ -126,18 +125,18 @@
 
         Object.entries(data).forEach(([datetime, matches]) => {
           const section = document.createElement("div");
-          section.className = "bg-gray-700 p-6 rounded-lg shadow-md";
+          section.className = "entry-box p-6 rounded-lg shadow-md";
 
           const sectionTitle = document.createElement("h2");
           sectionTitle.className = "section-title";
           sectionTitle.textContent = `🗓️ ${datetime}`;
 
           const content = document.createElement("div");
-          content.className = "toggle-content";
+          content.className = "toggle-content mt-4";
 
           matches.forEach(match => {
             const matchInfo = document.createElement("div");
-            matchInfo.className = "border-b pb-4";
+            matchInfo.className = "border-b border-gray-400 pb-4";
 
             const summary = document.createElement("p");
             summary.className = "summary-text";
@@ -157,7 +156,6 @@
             content.appendChild(matchInfo);
           });
 
-          // 日付をクリックすると統計を表示/非表示
           sectionTitle.addEventListener("click", () => {
             content.classList.toggle("open");
           });
