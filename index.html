@@ -48,9 +48,10 @@
 
             const summary = document.createElement("p");
             summary.className = "text-base font-medium text-gray-800 mb-1";
-            summary.textContent = `
+            summary.innerHTML = `
             勝利チーム: ${match.winningTeam}　｜　攻撃:キル数: ${match.redKill}　守備:キル数: ${match.blueKill}<br>
-            残り時間: ${match.remainingTime}秒　｜　コア耐久値: ${match.coreDurability}`;
+            残り時間: ${match.remainingTime}秒　｜　コア耐久値: ${match.coreDurability}
+            `;
 
             const teamInfo = document.createElement("p");
             teamInfo.className = "text-sm text-gray-600 mt-1";
