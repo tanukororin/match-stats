@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>試合統計データ</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>試合統計</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gradient-to-b from-gray-100 to-white min-h-screen py-10 px-4">
-  <div class="max-w-4xl mx-auto">
-    <h1 class="text-4xl font-bold text-center text-gray-800 mb-10">📊 攻城戦 試合統計</h1>
-    <div id="statsContainer" class="space-y-6"></div>
+<body class="bg-gray-100 text-gray-800 p-6">
+  <div class="max-w-3xl mx-auto">
+    <h1 class="text-2xl font-bold mb-6">試合統計データ</h1>
+    <div id="statsContainer" class="space-y-4"></div>
   </div>
-
   <script>
     fetch("/match-stats/stats.json")
       .then(response => {
@@ -20,6 +19,17 @@
       })
       .then(data => {
         const container = document.getElementById("statsContainer");
+
+        // プレイヤーを2人ずつ改行して表示する関数
+        function formatPlayers(playersObj) {
+          const entries = Object.entries(playersObj);
+          const lines = [];
+          for (let i = 0; i < entries.length; i += 2) {
+            const line = entries.slice(i, i + 2).map(([name, cls]) => `${name}（${cls}）`).join("、");
+            lines.push(line);
+          }
+          return lines.join("<br>");
+        }
 
         Object.entries(data).forEach(([datetime, matches]) => {
           const section = document.createElement("div");
@@ -42,9 +52,9 @@
 
             const teamInfo = document.createElement("p");
             teamInfo.className = "text-sm text-gray-600 mt-1";
-            const attack = Object.entries(match.teams["攻撃"]).map(([name, cls]) => `${name}（${cls}）`).join("、");
-            const defense = Object.entries(match.teams["守備"]).map(([name, cls]) => `${name}（${cls}）`).join("、");
-            teamInfo.textContent = `🟥 攻撃: ${attack}　｜　🟦 守備: ${defense}`;
+            const attack = formatPlayers(match.teams["攻撃"]);
+            const defense = formatPlayers(match.teams["守備"]);
+            teamInfo.innerHTML = `🟥 攻撃:<br>${attack}<br><br>🟦 守備:<br>${defense}`;
 
             item.appendChild(summary);
             item.appendChild(teamInfo);
