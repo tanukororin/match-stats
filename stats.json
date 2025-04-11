@@ -1,15 +1,6 @@
 {
   "2025-04-11": [
     {
-      "player1": "Alex",
-      "player2": "Steve",
-      "winner": "Alex",
-      "kills": [10, 5]
-    }
-  ]
-}
-
-{
   "winningTeam": "攻撃",           // 勝利チーム（攻撃か守備）
   "teams": {
     "攻撃": {
@@ -25,4 +16,6 @@
   "blueKill": 8,                    // 青チーム（守備）のキル数
   "remainingTime": 120,              // 残り時間（秒）
   "coreDurability": 50              // コアの耐久値（0～100）
+}
+  ]
 }
