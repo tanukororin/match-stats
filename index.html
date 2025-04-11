@@ -13,135 +13,50 @@
   </div>
 
   <script>
-  ChatGPT:
-ありがとうございます！JSONのデータ構造が確認できました。それでは、もう一度問題の根本原因を理解して、どうやって表示させるかを詳しく説明します。
+  fetch("/match-stats/stats.json")
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('ファイルの読み込みに失敗しました。');
+      }
+      return response.json();
+    })
+    .then(data => {
+      const container = document.getElementById("statsContainer");
 
-データ構造確認
-あなたのJSONファイルは、以下のように 日時 をキーにして試合データが格納されています：
-
-json
-コードをコピーする
-{
-  "2025-04-10 18:47": [
-    {
-      "winningTeam": "攻撃",
-      "teams": {
-        "攻撃": {
-          "player1": "Warrior",
-          "player2": "Archer"
-        },
-        "守備": {
-          "player3": "Mage",
-          "player4": "Healer"
-        }
-      },
-      "redKill": 12,
-      "blueKill": 8,
-      "remainingTime": 120,
-      "coreDurability": 50
-    }
-  ],
-  "2025-04-10 19:05": [
-    {
-      "winningTeam": "守備",
-      "teams": {
-        "攻撃": {
-          "tanuki": "Assassin",
-          "neko": "Tank"
-        },
-        "守備": {
-          "inu": "Sniper",
-          "kuma": "Healer"
-        }
-      },
-      "redKill": 7,
-      "blueKill": 10,
-      "remainingTime": 0,
-      "coreDurability": 80
-    }
-  ],
-  "2025-04-11 14:22": [
-    {
-      "winningTeam": "攻撃",
-      "teams": {
-        "攻撃": {
-          "mikan": "Mage",
-          "sora": "Knight"
-        },
-        "守備": {
-          "yuki": "Cleric",
-          "riku": "Defender"
-        }
-      },
-      "redKill": 15,
-      "blueKill": 9,
-      "remainingTime": 60,
-      "coreDurability": 0
-    }
-  ]
-}
-UIで表示したい内容
-日時（例: "2025-04-10 18:47"）とその試合データ（勝者、キル数、残り時間、コア耐久値）を 個別に表示 したい。
-
-現在の表示が 日時ごとにまとめられている ことが問題で、日時に関係なく個別に表示されるようにしたい。
-
-修正のアプローチ
-fetch でデータを取得し、そのデータを 個別の試合ごとに表示 するためのコードを次のように修正します。
-
-日時に関係なく、個別に試合を表示:
-
-今までの日付ごとのグループ化をやめ、試合ごとに表示するようにします。
-
-表示内容を修正:
-
-それぞれの試合が正しく表示されるように修正します。
-
-修正後のコード
-javascript
-コードをコピーする
-fetch("/match-stats/stats.json")
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('ファイルの読み込みに失敗しました。');
-    }
-    return response.json();
-  })
-  .then(data => {
-    const container = document.getElementById("statsContainer");
-
-    // データが正しく取得されているかコンソールで確認
-    console.log("取得したデータ:", data);
-
-    // 日時に関係なく個別に試合を表示
-    Object.entries(data).forEach(([datetime, matches]) => {
-      matches.forEach(match => {
+      // 時間（YYYY-MM-DD HH:MM）のままでグループ化せず、そのまま表示
+      Object.entries(data).forEach(([datetime, matches]) => {
         const section = document.createElement("div");
         section.className = "bg-white shadow-md rounded-lg overflow-hidden mb-4";
 
+        // 時刻をそのままトグルボタンのテキストにする
         const toggle = document.createElement("button");
         toggle.className = "w-full text-left px-4 py-3 bg-gray-200 font-semibold hover:bg-gray-300 focus:outline-none";
-        toggle.textContent = `▼ ${datetime}`;  // 時間とともに表示
+        toggle.textContent = `▼ ${datetime}`;
 
         const content = document.createElement("div");
         content.className = "hidden px-4 py-2";
 
-        // 各試合ごとに試合のデータを表示
-        const item = document.createElement("div");
-        item.className = "border-b py-2";
-        item.textContent = `勝者: ${match.winningTeam}｜赤キル数: ${match.redKill}｜青キル数: ${match.blueKill}｜残り時間: ${match.remainingTime}秒｜コア耐久値: ${match.coreDurability}`;
+        // 試合データを表示
+        matches.forEach(match => {
+          const item = document.createElement("div");
+          item.className = "border-b py-2";
 
-        // チームごとのプレイヤー情報を表示
-        const teamInfo = document.createElement("div");
-        teamInfo.className = "text-sm text-gray-500";
+          item.textContent = `勝者: ${match.winningTeam}｜赤キル数: ${match.redKill}｜青キル数: ${match.blueKill}｜残り時間: ${match.remainingTime}秒｜コア耐久値: ${match.coreDurability}`;
 
-        const attackPlayers = Object.entries(match.teams["攻撃"]).map(([name, cls]) => `${name}（${cls}）`).join(", ");
-        const defensePlayers = Object.entries(match.teams["守備"]).map(([name, cls]) => `${name}（${cls}）`).join(", ");
-        
-        teamInfo.textContent = `攻撃: ${attackPlayers}｜守備: ${defensePlayers}`;
-        item.appendChild(teamInfo);
+          const teamInfo = document.createElement("div");
+          teamInfo.className = "text-sm text-gray-500";
 
-        content.appendChild(item);
+          // プレイヤー情報を表示
+          const attackPlayers = Object.entries(match.teams["攻撃"]).map(([name, cls]) => `${name}（${cls}）`).join(", ");
+          const defensePlayers = Object.entries(match.teams["守備"]).map(([name, cls]) => `${name}（${cls}）`).join(", ");
+          
+          teamInfo.textContent = `攻撃: ${attackPlayers}｜守備: ${defensePlayers}`;
+          item.appendChild(teamInfo);
 
+          content.appendChild(item);
+        });
+
+        // トグルボタンをクリックしたときに表示内容を切り替える
         toggle.addEventListener("click", () => {
           content.classList.toggle("hidden");
         });
@@ -150,14 +65,11 @@ fetch("/match-stats/stats.json")
         section.appendChild(content);
         container.appendChild(section);
       });
+    })
+    .catch(error => {
+      console.error("エラー発生:", error);
+      document.getElementById("statsContainer").textContent = "データの読み込みに失敗しました。";
     });
-  })
-  .catch(error => {
-    console.error("エラー発生:", error);
-    document.getElementById("statsContainer").textContent = "データの読み込みに失敗しました。";
-  });
 </script>
-
-
 </body>
 </html>
