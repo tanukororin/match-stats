@@ -26,32 +26,28 @@
       // `data` は日付ごとの試合情報のオブジェクト
       const container = document.getElementById("statsContainer");
 
-      for (const [date, matches] of Object.entries(data)) {
+      for (const [datetime, matches] of Object.entries(data)) {
         const section = document.createElement("div");
         section.className = "bg-white shadow-md rounded-lg overflow-hidden";
 
         const toggle = document.createElement("button");
         toggle.className = "w-full text-left px-4 py-3 bg-gray-200 font-semibold hover:bg-gray-300 focus:outline-none";
-        toggle.textContent = `▼ ${date}`;
+        toggle.textContent = `▼ ${datetime}`;
 
         const content = document.createElement("div");
         content.className = "hidden px-4 py-2";
 
         matches.forEach(match => {
-          console.log(match);  // これで`match`の内容がどうなっているか確認
-
           const item = document.createElement("div");
           item.className = "border-b py-2";
-          
           item.textContent = `勝者: ${match.winningTeam}｜赤キル数: ${match.redKill}｜青キル数: ${match.blueKill}｜残り時間: ${match.remainingTime}秒｜コア耐久値: ${match.coreDurability}`;
 
-          // チームごとのプレイヤー情報を表示
           const teamInfo = document.createElement("div");
           teamInfo.className = "text-sm text-gray-500";
 
           const attackPlayers = Object.entries(match.teams["攻撃"]).map(([name, playerClass]) => `${name}（${playerClass}）`).join(", ");
           const defensePlayers = Object.entries(match.teams["守備"]).map(([name, playerClass]) => `${name}（${playerClass}）`).join(", ");
-          
+
           teamInfo.textContent = `攻撃: ${attackPlayers}｜守備: ${defensePlayers}`;
           item.appendChild(teamInfo);
 
@@ -66,6 +62,7 @@
         section.appendChild(content);
         container.appendChild(section);
       }
+
     })
     .catch(error => {
       console.error("エラー発生:", error);
