@@ -13,42 +13,63 @@
   </div>
 
   <script>
-  fetch("match-stats/stats.json")
-    .then(response => response.json())
-    .then(data => {
-      const container = document.getElementById("statsContainer");
+  fetch("/match-stats/stats.json")
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('ファイルの読み込みに失敗しました。');
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log("取得したデータ:", data);  // ここでデータが正しく取得されているか確認
+    const container = document.getElementById("statsContainer");
 
-      for (const [date, matches] of Object.entries(data)) {
-        const section = document.createElement("div");
-        section.className = "bg-white shadow-md rounded-lg overflow-hidden";
+    // `data` は日付ごとの試合情報のオブジェクト
+    for (const [date, matches] of Object.entries(data)) {
+      const section = document.createElement("div");
+      section.className = "bg-white shadow-md rounded-lg overflow-hidden";
 
-        const toggle = document.createElement("button");
-        toggle.className = "w-full text-left px-4 py-3 bg-gray-200 font-semibold hover:bg-gray-300 focus:outline-none";
-        toggle.textContent = `▼ ${date}`;
+      const toggle = document.createElement("button");
+      toggle.className = "w-full text-left px-4 py-3 bg-gray-200 font-semibold hover:bg-gray-300 focus:outline-none";
+      toggle.textContent = `▼ ${date}`;
 
-        const content = document.createElement("div");
-        content.className = "hidden px-4 py-2";
+      const content = document.createElement("div");
+      content.className = "hidden px-4 py-2";
 
-        matches.forEach(match => {
-          const item = document.createElement("div");
-          item.className = "border-b py-2";
-          item.textContent = `${match.player1} vs ${match.player2}｜勝者: ${match.winner}｜キル: ${match.kills[0]} - ${match.kills[1]}`;
-          content.appendChild(item);
-        });
+      matches.forEach(match => {
+        const item = document.createElement("div");
+        item.className = "border-b py-2";
 
-        toggle.addEventListener("click", () => {
-          content.classList.toggle("hidden");
-        });
+        // 試合情報の表示内容
+        item.textContent = `勝者: ${match.winningTeam}｜赤キル数: ${match.redKill}｜青キル数: ${match.blueKill}｜残り時間: ${match.remainingTime}秒｜コア耐久値: ${match.coreDurability}`;
 
-        section.appendChild(toggle);
-        section.appendChild(content);
-        container.appendChild(section);
-      }
-    })
-    .catch(error => {
-      document.getElementById("statsContainer").textContent = "データの読み込みに失敗しました。";
-      console.error("読み込みエラー:", error);
-    });
+        // チームごとのプレイヤー情報を表示
+        const teamInfo = document.createElement("div");
+        teamInfo.className = "text-sm text-gray-500";
+
+        const attackPlayers = Object.entries(match.teams["攻撃"]).map(([name, playerClass]) => `${name}（${playerClass}）`).join(", ");
+        const defensePlayers = Object.entries(match.teams["守備"]).map(([name, playerClass]) => `${name}（${playerClass}）`).join(", ");
+        
+        teamInfo.textContent = `攻撃: ${attackPlayers}｜守備: ${defensePlayers}`;
+        item.appendChild(teamInfo);
+
+        content.appendChild(item);
+      });
+
+      toggle.addEventListener("click", () => {
+        content.classList.toggle("hidden");
+      });
+
+      section.appendChild(toggle);
+      section.appendChild(content);
+      container.appendChild(section);
+    }
+  })
+  .catch(error => {
+    console.error("エラー発生:", error);
+    document.getElementById("statsContainer").textContent = "データの読み込みに失敗しました。";
+  });
+
 </script>
 </body>
 </html>
