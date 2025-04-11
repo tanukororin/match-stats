@@ -6,6 +6,7 @@
   <title>箱鯖攻城戦</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    /* トグル展開アニメーション */
     .toggle-content {
       transition: max-height 0.4s ease, opacity 0.4s ease;
       overflow: hidden;
@@ -18,35 +19,38 @@
     }
   </style>
 </head>
-<body class="bg-gray-100 text-gray-800 h-screen p-6">
-  <div class="flex flex-col items-start space-y-4">
-    <h1 class="text-3xl font-bold text-indigo-700">📦 箱鯖攻城戦</h1>
+<body class="bg-gray-100 text-gray-800 min-h-screen">
 
-    <div class="space-y-4 w-64">
-      <button id="toggleStats" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white text-lg rounded-xl shadow-md transition">
+  <div class="p-6">
+    <!-- タイトル -->
+    <h1 class="text-3xl font-bold mb-6">🏯 箱鯖攻城戦</h1>
+
+    <!-- メニューボタン -->
+    <div class="space-y-4">
+      <button id="toggleStatsBtn" class="w-48 h-20 text-xl font-semibold bg-blue-500 text-white rounded-xl shadow hover:bg-blue-600 transition">
         試合統計
       </button>
-      <button class="w-full py-4 bg-green-600 hover:bg-green-700 text-white text-lg rounded-xl shadow-md transition">
+      <button class="w-48 h-20 text-xl font-semibold bg-green-500 text-white rounded-xl shadow hover:bg-green-600 transition">
         クラス説明
       </button>
     </div>
-  </div>
 
-  <div class="flex justify-center mt-6">
-    <div id="statsWrapper" class="toggle-content w-full max-w-4xl bg-white rounded-xl p-4 shadow-inner">
-      <div id="statsContainer" class="space-y-4"></div>
+    <!-- トグル表示：試合統計データ -->
+    <div id="statsSection" class="toggle-content mt-8">
+      <div id="statsContainer" class="max-w-3xl mx-auto space-y-4"></div>
     </div>
   </div>
 
   <script>
-    const statsWrapper = document.getElementById("statsWrapper");
-    const statsContainer = document.getElementById("statsContainer");
-    const toggleButton = document.getElementById("toggleStats");
+    // トグル動作
+    const toggleBtn = document.getElementById("toggleStatsBtn");
+    const statsSection = document.getElementById("statsSection");
 
-    toggleButton.addEventListener("click", () => {
-      statsWrapper.classList.toggle("open");
+    toggleBtn.addEventListener("click", () => {
+      statsSection.classList.toggle("open");
     });
 
+    // プレイヤーを2人ずつ改行して表示する関数
     function formatPlayers(playersObj) {
       const entries = Object.entries(playersObj);
       const lines = [];
@@ -57,52 +61,60 @@
       return lines.join("<br>");
     }
 
+    // JSONデータを読み込んで表示
     fetch("/match-stats/stats.json")
       .then(response => {
-        if (!response.ok) throw new Error("読み込みに失敗しました");
+        if (!response.ok) throw new Error("ファイルの読み込みに失敗しました。");
         return response.json();
       })
       .then(data => {
+        const container = document.getElementById("statsContainer");
+
         Object.entries(data).forEach(([datetime, matches]) => {
           const section = document.createElement("div");
-          section.className = "border rounded-lg overflow-hidden";
+          section.className = "bg-white rounded-xl shadow-md border border-gray-200";
 
           const toggle = document.createElement("button");
-          toggle.className = "w-full px-4 py-3 bg-gray-200 hover:bg-gray-300 text-left font-semibold";
+          toggle.className = "w-full px-6 py-4 bg-gray-100 hover:bg-gray-200 text-left text-lg font-semibold tracking-wide";
           toggle.textContent = `🗓️ ${datetime}`;
 
           const content = document.createElement("div");
-          content.className = "hidden px-4 py-3 space-y-2 bg-white border-t";
-
-          toggle.addEventListener("click", () => {
-            content.classList.toggle("hidden");
-          });
+          content.className = "toggle-content px-6 py-4 space-y-4 bg-white";
 
           matches.forEach(match => {
+            const item = document.createElement("div");
+            item.className = "border-b pb-4";
+
             const summary = document.createElement("p");
-            summary.className = "font-medium";
+            summary.className = "text-base font-medium text-gray-800 mb-1";
             summary.innerHTML = `
-              🏆 勝利チーム: ${match.winningTeam} ｜ 🔴 攻撃キル: ${match.redKill} 🔵 守備キル: ${match.blueKill}<br>
-              🕒 残り時間: ${match.remainingTime}秒 ｜ 🧱 コア耐久: ${match.coreDurability}
+              🏆 勝利チーム: ${match.winningTeam}　｜　🔴 攻撃キル数: ${match.redKill}　🔵 守備キル数: ${match.blueKill}<br>
+              🕒 残り時間: ${match.remainingTime}秒　｜　🧱 コア耐久値: ${match.coreDurability}
             `;
 
-            const team = document.createElement("p");
-            team.className = "text-sm text-gray-600";
+            const teamInfo = document.createElement("p");
+            teamInfo.className = "text-sm text-gray-600 mt-1";
             const attack = formatPlayers(match.teams["攻撃"]);
             const defense = formatPlayers(match.teams["守備"]);
-            team.innerHTML = `🟥 攻撃:<br>${attack}<br><br>🟦 守備:<br>${defense}`;
+            teamInfo.innerHTML = `🟥 攻撃:<br>${attack}<br><br>🟦 守備:<br>${defense}`;
 
-            content.appendChild(summary);
-            content.appendChild(team);
+            item.appendChild(summary);
+            item.appendChild(teamInfo);
+            content.appendChild(item);
+          });
+
+          toggle.addEventListener("click", () => {
+            content.classList.toggle("open");
           });
 
           section.appendChild(toggle);
           section.appendChild(content);
-          statsContainer.appendChild(section);
+          container.appendChild(section);
         });
       })
       .catch(error => {
-        statsContainer.textContent = "統計データの読み込みに失敗しました。";
+        console.error("エラー:", error);
+        document.getElementById("statsContainer").textContent = "データの読み込みに失敗しました。";
       });
   </script>
 </body>
