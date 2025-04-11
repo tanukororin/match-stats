@@ -1,21 +1,57 @@
 {
-  "2025-04-11": [
+  "2025-04-10": [
     {
-  "winningTeam": "攻撃", 
-  "teams": {
-    "攻撃": {
-      "player1": "Warrior",
-      "player2": "Archer"
+      "winningTeam": "攻撃",
+      "teams": {
+        "攻撃": {
+          "player1": "Warrior",
+          "player2": "Archer"
+        },
+        "守備": {
+          "player3": "Mage",
+          "player4": "Healer"
+        }
+      },
+      "redKill": 12,
+      "blueKill": 8,
+      "remainingTime": 120,
+      "coreDurability": 50
     },
-    "守備": {
-      "player3": "Mage",
-      "player4": "Healer"
+    {
+      "winningTeam": "守備",
+      "teams": {
+        "攻撃": {
+          "player1": "Berserker",
+          "player2": "Assassin"
+        },
+        "守備": {
+          "player3": "Wizard",
+          "player4": "Priest"
+        }
+      },
+      "redKill": 9,
+      "blueKill": 14,
+      "remainingTime": 100,
+      "coreDurability": 40
     }
-  },
-  "redKill": 12,
-  "blueKill": 8
-  "remainingTime": 120,
-  "coreDurability": 50 
-}
+  ],
+  "2025-04-09": [
+    {
+      "winningTeam": "攻撃",
+      "teams": {
+        "攻撃": {
+          "player1": "Knight",
+          "player2": "Hunter"
+        },
+        "守備": {
+          "player3": "Sorcerer",
+          "player4": "Cleric"
+        }
+      },
+      "redKill": 15,
+      "blueKill": 6,
+      "remainingTime": 150,
+      "coreDurability": 30
+    }
   ]
 }
