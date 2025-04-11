@@ -1,7 +1,7 @@
 {
   "2025-04-11": [
     {
-  "winningTeam": "攻撃",           // 勝利チーム（攻撃か守備）
+  "winningTeam": "攻撃", 
   "teams": {
     "攻撃": {
       "player1": "Warrior",
@@ -12,10 +12,10 @@
       "player4": "Healer"
     }
   },
-  "redKill": 12,                    // 赤チーム（攻撃）のキル数
-  "blueKill": 8,                    // 青チーム（守備）のキル数
-  "remainingTime": 120,              // 残り時間（秒）
-  "coreDurability": 50              // コアの耐久値（0～100）
+  "redKill": 12,
+  "blueKill": 8
+  "remainingTime": 120,
+  "coreDurability": 50 
 }
   ]
 }
