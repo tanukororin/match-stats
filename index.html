@@ -11,55 +11,6 @@
     <h1 class="text-2xl font-bold mb-6">試合統計データ</h1>
     <div id="statsContainer" class="space-y-4"></div>
   </div>
-
-  ChatGPT:
-了解！では、おしゃれで軽量な見た目を意識した統計表示用のHTML + JSを下にまとめるね。Tailwindを活かして柔らかいデザイン・見やすい構成にしてあるよ。
-
-✅ 改良版：試合統計表示 UI（Tailwind 使用）
-html
-コードをコピーする
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>試合統計データ</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 text-gray-800 p-6">
-  <div class="max-w-3xl mx-auto space-y-6">
-    <h1 class="text-3xl font-bold text-center mb-6">🏰 攻城戦 試合統計</h1>
-    <div id="statsContainer" class="space-y-4"></div>
-  </div>
-
-  ChatGPT:
-OK、任せて！ちゃんと「おしゃれで軽量」に見えるように、今度は明確にデザインを整えた完全版のUIを作るね。以下のコードでは：
-
-カード風デザイン
-
-セクションごとの余白と影で見やすく
-
-タイトルとラベルも強調
-
-絵文字＋フォントサイズで視認性アップ
-
-✅ 改良版 UI（Tailwind + しっかりデザイン）
-html
-コードをコピーする
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>試合統計データ</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gradient-to-b from-gray-100 to-white min-h-screen py-10 px-4">
-  <div class="max-w-4xl mx-auto">
-    <h1 class="text-4xl font-bold text-center text-gray-800 mb-10">📊 攻城戦 試合統計</h1>
-    <div id="statsContainer" class="space-y-6"></div>
-  </div>
-
   <script>
     fetch("/match-stats/stats.json")
       .then(response => {
@@ -86,7 +37,10 @@ html
 
             const summary = document.createElement("p");
             summary.className = "text-base font-medium text-gray-800 mb-1";
-            summary.textContent = `🏆 勝者: ${match.winningTeam}　｜　🔴 赤キル: ${match.redKill}　🔵 青キル: ${match.blueKill}　｜　🕒 残り時間: ${match.remainingTime}秒　｜　🧱 コア耐久: ${match.coreDurability}`;
+            summary.innerHTML = `
+            🏆 勝者: ${match.winningTeam}　｜　🔴 赤キル: ${match.redKill}　🔵 青キル: ${match.blueKill}<br>
+            🕒 残り時間: ${match.remainingTime}秒　｜　🧱 コア耐久: ${match.coreDurability}
+            `;
 
             const teamInfo = document.createElement("p");
             teamInfo.className = "text-sm text-gray-600 mt-1";
