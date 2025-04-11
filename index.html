@@ -157,6 +157,11 @@
             content.appendChild(matchInfo);
           });
 
+          // 日付をクリックすると統計を表示/非表示
+          sectionTitle.addEventListener("click", () => {
+            content.classList.toggle("open");
+          });
+
           section.appendChild(sectionTitle);
           section.appendChild(content);
           container.appendChild(section);
