@@ -3,14 +3,46 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>試合統計</title>
+  <title>箱鯖攻城戦</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* トグルアニメーション */
+    .toggle-content {
+      transition: max-height 0.3s ease-in-out;
+      overflow: hidden;
+      max-height: 0;
+    }
+    .toggle-content.open {
+      max-height: 500px; /* 適宜調整 */
+    }
+  </style>
 </head>
-<body class="bg-gray-100 text-gray-800 p-6">
-  <div class="max-w-3xl mx-auto">
-    <h1 class="text-2xl font-bold mb-6">試合統計データ</h1>
+<body class="bg-gray-50 text-gray-800 p-6">
+
+  <!-- メインコンテナ -->
+  <div class="max-w-4xl mx-auto space-y-6">
+    <!-- ヘッダー: 箱鯖攻城戦 -->
+    <div class="text-3xl font-bold text-center text-indigo-600">
+      箱鯖攻城戦
+    </div>
+
+    <!-- ボタンエリア -->
+    <div class="space-y-4">
+      <!-- 試合統計ボタン -->
+      <button class="w-full px-6 py-4 bg-indigo-600 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition duration-300">
+        試合統計
+      </button>
+
+      <!-- クラス説明ボタン -->
+      <button class="w-full px-6 py-4 bg-green-600 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300">
+        クラス説明
+      </button>
+    </div>
+
+    <!-- 試合統計表示エリア -->
     <div id="statsContainer" class="space-y-4"></div>
   </div>
+
   <script>
     fetch("/match-stats/stats.json")
       .then(response => {
@@ -40,7 +72,7 @@
           toggle.textContent = `🗓️ ${datetime}`;
 
           const content = document.createElement("div");
-          content.className = "hidden px-6 py-4 space-y-4 bg-white";
+          content.className = "toggle-content px-6 py-4 space-y-4 bg-white";
 
           matches.forEach(match => {
             const item = document.createElement("div");
@@ -65,7 +97,7 @@
           });
 
           toggle.addEventListener("click", () => {
-            content.classList.toggle("hidden");
+            content.classList.toggle("open");
           });
 
           section.appendChild(toggle);
