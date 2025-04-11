@@ -17,5 +17,43 @@
       "remainingTime": 120,
       "coreDurability": 50
     }
+  ],
+  "2025-04-10 19:05": [
+    {
+      "winningTeam": "守備",
+      "teams": {
+        "攻撃": {
+          "tanuki": "Assassin",
+          "neko": "Tank"
+        },
+        "守備": {
+          "inu": "Sniper",
+          "kuma": "Healer"
+        }
+      },
+      "redKill": 7,
+      "blueKill": 10,
+      "remainingTime": 0,
+      "coreDurability": 80
+    }
+  ],
+  "2025-04-11 14:22": [
+    {
+      "winningTeam": "攻撃",
+      "teams": {
+        "攻撃": {
+          "mikan": "Mage",
+          "sora": "Knight"
+        },
+        "守備": {
+          "yuki": "Cleric",
+          "riku": "Defender"
+        }
+      },
+      "redKill": 15,
+      "blueKill": 9,
+      "remainingTime": 60,
+      "coreDurability": 0
+    }
   ]
 }
