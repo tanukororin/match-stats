@@ -5,7 +5,10 @@
       "teams": {
         "攻撃": {
           "player1": "Warrior",
-          "player2": "Archer"
+          "player2": "Archer",
+          "player3": "Archer",
+          "player4": "Archer",
+          "player5": "Archer"
         },
         "守備": {
           "player3": "Mage",
