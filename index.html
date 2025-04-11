@@ -12,55 +12,65 @@
     <div id="statsContainer" class="space-y-4"></div>
   </div>
 
+  ChatGPT:
+了解！では、おしゃれで軽量な見た目を意識した統計表示用のHTML + JSを下にまとめるね。Tailwindを活かして柔らかいデザイン・見やすい構成にしてあるよ。
+
+✅ 改良版：試合統計表示 UI（Tailwind 使用）
+html
+コードをコピーする
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>試合統計データ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 p-6">
+  <div class="max-w-3xl mx-auto space-y-6">
+    <h1 class="text-3xl font-bold text-center mb-6">🏰 攻城戦 試合統計</h1>
+    <div id="statsContainer" class="space-y-4"></div>
+  </div>
+
   <script>
-    // stats.jsonからデータを取得
     fetch("/match-stats/stats.json")
       .then(response => {
-        // ファイルが正しく読み込めたか確認
-        if (!response.ok) {
-          throw new Error('ファイルの読み込みに失敗しました。');
-        }
+        if (!response.ok) throw new Error("ファイルの読み込みに失敗しました。");
         return response.json();
       })
       .then(data => {
-        console.log(data); // データ確認
-
         const container = document.getElementById("statsContainer");
 
-        // 時間（YYYY-MM-DD HH:MM）のままでグループ化せず、そのまま表示
         Object.entries(data).forEach(([datetime, matches]) => {
           const section = document.createElement("div");
-          section.className = "bg-white shadow-md rounded-lg overflow-hidden mb-4";
+          section.className = "bg-white rounded-2xl shadow-lg overflow-hidden";
 
-          // 時刻をそのままトグルボタンのテキストにする
           const toggle = document.createElement("button");
-          toggle.className = "w-full text-left px-4 py-3 bg-gray-200 font-semibold hover:bg-gray-300 focus:outline-none";
-          toggle.textContent = `▼ ${datetime}`;
+          toggle.className = "w-full px-5 py-4 bg-gray-200 hover:bg-gray-300 text-left text-lg font-semibold";
+          toggle.textContent = `📅 ${datetime}`;
 
           const content = document.createElement("div");
-          content.className = "hidden px-4 py-2";
+          content.className = "hidden px-5 py-4 space-y-4";
 
-          // 試合データを表示
           matches.forEach(match => {
             const item = document.createElement("div");
-            item.className = "border-b py-2";
+            item.className = "border-b pb-4";
 
-            item.textContent = `勝者: ${match.winningTeam}｜赤キル数: ${match.redKill}｜青キル数: ${match.blueKill}｜残り時間: ${match.remainingTime}秒｜コア耐久値: ${match.coreDurability}`;
+            const summary = document.createElement("p");
+            summary.className = "text-base mb-1";
+            summary.textContent = `🏆 勝者: ${match.winningTeam}　｜　🔴 赤キル: ${match.redKill}　🔵 青キル: ${match.blueKill}　｜　🕒 残り時間: ${match.remainingTime}秒　｜　💥 コア耐久: ${match.coreDurability}`;
 
-            const teamInfo = document.createElement("div");
-            teamInfo.className = "text-sm text-gray-500";
+            const teamInfo = document.createElement("p");
+            teamInfo.className = "text-sm text-gray-600 mt-1";
+            const attack = Object.entries(match.teams["攻撃"]).map(([name, cls]) => `${name}（${cls}）`).join("、");
+            const defense = Object.entries(match.teams["守備"]).map(([name, cls]) => `${name}（${cls}）`).join("、");
+            teamInfo.textContent = `🟥 攻撃: ${attack}　｜　🟦 守備: ${defense}`;
 
-            // プレイヤー情報を表示
-            const attackPlayers = Object.entries(match.teams["攻撃"]).map(([name, cls]) => `${name}（${cls}）`).join(", ");
-            const defensePlayers = Object.entries(match.teams["守備"]).map(([name, cls]) => `${name}（${cls}）`).join(", ");
-            
-            teamInfo.textContent = `攻撃: ${attackPlayers}｜守備: ${defensePlayers}`;
+            item.appendChild(summary);
             item.appendChild(teamInfo);
-
             content.appendChild(item);
           });
 
-          // トグルボタンをクリックしたときに表示内容を切り替える
           toggle.addEventListener("click", () => {
             content.classList.toggle("hidden");
           });
