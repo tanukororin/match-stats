@@ -13,42 +13,42 @@
   </div>
 
   <script>
-    fetch("stats.json")
-      .then(response => response.json())
-      .then(data => {
-        const container = document.getElementById("statsContainer");
+  fetch("match-stats/stats.json")
+    .then(response => response.json())
+    .then(data => {
+      const container = document.getElementById("statsContainer");
 
-        for (const [date, matches] of Object.entries(data)) {
-          const section = document.createElement("div");
-          section.className = "bg-white shadow-md rounded-lg overflow-hidden";
+      for (const [date, matches] of Object.entries(data)) {
+        const section = document.createElement("div");
+        section.className = "bg-white shadow-md rounded-lg overflow-hidden";
 
-          const toggle = document.createElement("button");
-          toggle.className = "w-full text-left px-4 py-3 bg-gray-200 font-semibold hover:bg-gray-300 focus:outline-none";
-          toggle.textContent = `▼ ${date}`;
+        const toggle = document.createElement("button");
+        toggle.className = "w-full text-left px-4 py-3 bg-gray-200 font-semibold hover:bg-gray-300 focus:outline-none";
+        toggle.textContent = `▼ ${date}`;
 
-          const content = document.createElement("div");
-          content.className = "hidden px-4 py-2";
+        const content = document.createElement("div");
+        content.className = "hidden px-4 py-2";
 
-          matches.forEach(match => {
-            const item = document.createElement("div");
-            item.className = "border-b py-2";
-            item.textContent = `${match.player1} vs ${match.player2}｜勝者: ${match.winner}｜キル: ${match.kills[0]} - ${match.kills[1]}`;
-            content.appendChild(item);
-          });
+        matches.forEach(match => {
+          const item = document.createElement("div");
+          item.className = "border-b py-2";
+          item.textContent = `${match.player1} vs ${match.player2}｜勝者: ${match.winner}｜キル: ${match.kills[0]} - ${match.kills[1]}`;
+          content.appendChild(item);
+        });
 
-          toggle.addEventListener("click", () => {
-            content.classList.toggle("hidden");
-          });
+        toggle.addEventListener("click", () => {
+          content.classList.toggle("hidden");
+        });
 
-          section.appendChild(toggle);
-          section.appendChild(content);
-          container.appendChild(section);
-        }
-      })
-      .catch(error => {
-        document.getElementById("statsContainer").textContent = "データの読み込みに失敗しました。";
-        console.error("読み込みエラー:", error);
-      });
-  </script>
+        section.appendChild(toggle);
+        section.appendChild(content);
+        container.appendChild(section);
+      }
+    })
+    .catch(error => {
+      document.getElementById("statsContainer").textContent = "データの読み込みに失敗しました。";
+      console.error("読み込みエラー:", error);
+    });
+</script>
 </body>
 </html>
