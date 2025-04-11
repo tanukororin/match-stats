@@ -1,113 +1,94 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>箱鯖攻城戦</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* トグルアニメーション */
     .toggle-content {
-      transition: max-height 0.3s ease-in-out;
+      transition: max-height 0.3s ease;
       overflow: hidden;
       max-height: 0;
     }
     .toggle-content.open {
-      max-height: 500px; /* 適宜調整 */
+      max-height: 1000px; /* 十分に大きい値を指定してね */
     }
   </style>
 </head>
-<body class="bg-gray-50 text-gray-800 p-6">
+<body class="bg-gray-100 text-gray-800 h-screen p-6">
 
-  <!-- メインコンテナ -->
-  <div class="max-w-4xl mx-auto space-y-6">
-    <!-- ヘッダー: 箱鯖攻城戦 -->
-    <div class="text-3xl font-bold text-center text-indigo-600">
-      箱鯖攻城戦
-    </div>
+  <!-- 左上コンテンツ -->
+  <div class="flex flex-col items-start space-y-4">
+    <!-- タイトル -->
+    <h1 class="text-3xl font-bold text-indigo-700">📦 箱鯖攻城戦</h1>
 
-    <!-- ボタンエリア -->
-    <div class="space-y-4">
-      <!-- 試合統計ボタン -->
-      <button class="w-full px-6 py-4 bg-indigo-600 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition duration-300">
+    <!-- メニュー -->
+    <div class="space-y-4 w-64">
+      <button id="toggleStats" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white text-lg rounded-xl shadow-md transition">
         試合統計
       </button>
-
-      <!-- クラス説明ボタン -->
-      <button class="w-full px-6 py-4 bg-green-600 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300">
+      <button class="w-full py-4 bg-green-600 hover:bg-green-700 text-white text-lg rounded-xl shadow-md transition">
         クラス説明
       </button>
     </div>
 
-    <!-- 試合統計表示エリア -->
-    <div id="statsContainer" class="space-y-4"></div>
+    <!-- トグル表示される試合統計 -->
+    <div id="statsContainer" class="toggle-content w-full bg-white rounded-xl p-4 shadow-inner mt-2"></div>
   </div>
 
   <script>
+    const statsContainer = document.getElementById("statsContainer");
+    const toggleButton = document.getElementById("toggleStats");
+
+    toggleButton.addEventListener("click", () => {
+      statsContainer.classList.toggle("open");
+    });
+
+    // プレイヤーを2人ずつ改行して表示する関数
+    function formatPlayers(playersObj) {
+      const entries = Object.entries(playersObj);
+      const lines = [];
+      for (let i = 0; i < entries.length; i += 2) {
+        const line = entries.slice(i, i + 2).map(([name, cls]) => `${name}（${cls}）`).join("、");
+        lines.push(line);
+      }
+      return lines.join("<br>");
+    }
+
     fetch("/match-stats/stats.json")
       .then(response => {
-        if (!response.ok) throw new Error("ファイルの読み込みに失敗しました。");
+        if (!response.ok) throw new Error("読み込みに失敗しました");
         return response.json();
       })
       .then(data => {
-        const container = document.getElementById("statsContainer");
-
-        // プレイヤーを2人ずつ改行して表示する関数
-        function formatPlayers(playersObj) {
-          const entries = Object.entries(playersObj);
-          const lines = [];
-          for (let i = 0; i < entries.length; i += 2) {
-            const line = entries.slice(i, i + 2).map(([name, cls]) => `${name}（${cls}）`).join("、");
-            lines.push(line);
-          }
-          return lines.join("<br>");
-        }
-
         Object.entries(data).forEach(([datetime, matches]) => {
-          const section = document.createElement("div");
-          section.className = "bg-white rounded-xl shadow-md overflow-hidden border border-gray-200";
-
-          const toggle = document.createElement("button");
-          toggle.className = "w-full px-6 py-4 bg-gray-100 hover:bg-gray-200 text-left text-lg font-semibold tracking-wide";
-          toggle.textContent = `🗓️ ${datetime}`;
-
-          const content = document.createElement("div");
-          content.className = "toggle-content px-6 py-4 space-y-4 bg-white";
+          const block = document.createElement("div");
+          block.className = "mb-6 border-b pb-4";
 
           matches.forEach(match => {
-            const item = document.createElement("div");
-            item.className = "border-b pb-4";
-
             const summary = document.createElement("p");
-            summary.className = "text-base font-medium text-gray-800 mb-1";
+            summary.className = "font-semibold mb-2";
             summary.innerHTML = `
-            勝利チーム: ${match.winningTeam}　｜　攻撃:キル数: ${match.redKill}　守備:キル数: ${match.blueKill}<br>
-            残り時間: ${match.remainingTime}秒　｜　コア耐久値: ${match.coreDurability}
+              🏆 勝利チーム: ${match.winningTeam} ｜ 🔴 攻撃キル: ${match.redKill} 🔵 守備キル: ${match.blueKill}<br>
+              🕒 残り時間: ${match.remainingTime}秒 ｜ 🧱 コア耐久: ${match.coreDurability}
             `;
 
-            const teamInfo = document.createElement("p");
-            teamInfo.className = "text-sm text-gray-600 mt-1";
+            const team = document.createElement("p");
+            team.className = "text-sm text-gray-600";
             const attack = formatPlayers(match.teams["攻撃"]);
             const defense = formatPlayers(match.teams["守備"]);
-            teamInfo.innerHTML = `🟥 攻撃:<br>${attack}<br><br>🟦 守備:<br>${defense}`;
+            team.innerHTML = `🟥 攻撃:<br>${attack}<br><br>🟦 守備:<br>${defense}`;
 
-            item.appendChild(summary);
-            item.appendChild(teamInfo);
-            content.appendChild(item);
+            block.appendChild(summary);
+            block.appendChild(team);
           });
 
-          toggle.addEventListener("click", () => {
-            content.classList.toggle("open");
-          });
-
-          section.appendChild(toggle);
-          section.appendChild(content);
-          container.appendChild(section);
+          statsContainer.appendChild(block);
         });
       })
       .catch(error => {
-        console.error("エラー発生:", error);
-        document.getElementById("statsContainer").textContent = "データの読み込みに失敗しました。";
+        statsContainer.textContent = "統計データの読み込みに失敗しました。";
       });
   </script>
 </body>
