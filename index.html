@@ -23,23 +23,17 @@
   .then(data => {
     const container = document.getElementById("statsContainer");
 
-    // 日付（YYYY-MM-DD）ごとにまとめる
-    const grouped = {};
-    for (const [datetime, matches] of Object.entries(data)) {
-      const dateOnly = datetime.split(" ")[0]; // "2025-04-10 18:47" → "2025-04-10"
-      if (!grouped[dateOnly]) grouped[dateOnly] = [];
-      grouped[dateOnly].push(...matches); // 試合を追加
-    }
-
-    // トグル表示
-    for (const [date, matches] of Object.entries(grouped)) {
+    // 日時（YYYY-MM-DD HH:mm）ごとにそのまま表示
+    Object.entries(data).forEach(([datetime, matches]) => {
       const section = document.createElement("div");
       section.className = "bg-white shadow-md rounded-lg overflow-hidden mb-4";
 
+      // 時間（日時）を表示するトグルボタン
       const toggle = document.createElement("button");
       toggle.className = "w-full text-left px-4 py-3 bg-gray-200 font-semibold hover:bg-gray-300 focus:outline-none";
-      toggle.textContent = `▼ ${date}`;
+      toggle.textContent = `▼ ${datetime}`;
 
+      // 試合の詳細を表示するコンテンツ
       const content = document.createElement("div");
       content.className = "hidden px-4 py-2";
 
@@ -47,8 +41,10 @@
         const item = document.createElement("div");
         item.className = "border-b py-2";
 
+        // 試合の概要を表示
         item.textContent = `勝者: ${match.winningTeam}｜赤キル数: ${match.redKill}｜青キル数: ${match.blueKill}｜残り時間: ${match.remainingTime}秒｜コア耐久値: ${match.coreDurability}`;
 
+        // チームごとのプレイヤー情報を表示
         const teamInfo = document.createElement("div");
         teamInfo.className = "text-sm text-gray-500";
 
@@ -68,14 +64,14 @@
       section.appendChild(toggle);
       section.appendChild(content);
       container.appendChild(section);
-    }
+    });
   })
   .catch(error => {
     console.error("エラー発生:", error);
     document.getElementById("statsContainer").textContent = "データの読み込みに失敗しました。";
   });
-
 </script>
+
 
 </body>
 </html>
