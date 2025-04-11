@@ -13,63 +13,67 @@
   </div>
 
   <script>
-  fetch("/match-stats/stats.json")
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('ファイルの読み込みに失敗しました。');
-      }
-      return response.json();
-    })
-    .then(data => {
-      const container = document.getElementById("statsContainer");
+    // stats.jsonからデータを取得
+    fetch("/match-stats/stats.json")
+      .then(response => {
+        // ファイルが正しく読み込めたか確認
+        if (!response.ok) {
+          throw new Error('ファイルの読み込みに失敗しました。');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log(data); // データ確認
 
-      // 時間（YYYY-MM-DD HH:MM）のままでグループ化せず、そのまま表示
-      Object.entries(data).forEach(([datetime, matches]) => {
-        const section = document.createElement("div");
-        section.className = "bg-white shadow-md rounded-lg overflow-hidden mb-4";
+        const container = document.getElementById("statsContainer");
 
-        // 時刻をそのままトグルボタンのテキストにする
-        const toggle = document.createElement("button");
-        toggle.className = "w-full text-left px-4 py-3 bg-gray-200 font-semibold hover:bg-gray-300 focus:outline-none";
-        toggle.textContent = `▼ ${datetime}`;
+        // 時間（YYYY-MM-DD HH:MM）のままでグループ化せず、そのまま表示
+        Object.entries(data).forEach(([datetime, matches]) => {
+          const section = document.createElement("div");
+          section.className = "bg-white shadow-md rounded-lg overflow-hidden mb-4";
 
-        const content = document.createElement("div");
-        content.className = "hidden px-4 py-2";
+          // 時刻をそのままトグルボタンのテキストにする
+          const toggle = document.createElement("button");
+          toggle.className = "w-full text-left px-4 py-3 bg-gray-200 font-semibold hover:bg-gray-300 focus:outline-none";
+          toggle.textContent = `▼ ${datetime}`;
 
-        // 試合データを表示
-        matches.forEach(match => {
-          const item = document.createElement("div");
-          item.className = "border-b py-2";
+          const content = document.createElement("div");
+          content.className = "hidden px-4 py-2";
 
-          item.textContent = `勝者: ${match.winningTeam}｜赤キル数: ${match.redKill}｜青キル数: ${match.blueKill}｜残り時間: ${match.remainingTime}秒｜コア耐久値: ${match.coreDurability}`;
+          // 試合データを表示
+          matches.forEach(match => {
+            const item = document.createElement("div");
+            item.className = "border-b py-2";
 
-          const teamInfo = document.createElement("div");
-          teamInfo.className = "text-sm text-gray-500";
+            item.textContent = `勝者: ${match.winningTeam}｜赤キル数: ${match.redKill}｜青キル数: ${match.blueKill}｜残り時間: ${match.remainingTime}秒｜コア耐久値: ${match.coreDurability}`;
 
-          // プレイヤー情報を表示
-          const attackPlayers = Object.entries(match.teams["攻撃"]).map(([name, cls]) => `${name}（${cls}）`).join(", ");
-          const defensePlayers = Object.entries(match.teams["守備"]).map(([name, cls]) => `${name}（${cls}）`).join(", ");
-          
-          teamInfo.textContent = `攻撃: ${attackPlayers}｜守備: ${defensePlayers}`;
-          item.appendChild(teamInfo);
+            const teamInfo = document.createElement("div");
+            teamInfo.className = "text-sm text-gray-500";
 
-          content.appendChild(item);
+            // プレイヤー情報を表示
+            const attackPlayers = Object.entries(match.teams["攻撃"]).map(([name, cls]) => `${name}（${cls}）`).join(", ");
+            const defensePlayers = Object.entries(match.teams["守備"]).map(([name, cls]) => `${name}（${cls}）`).join(", ");
+            
+            teamInfo.textContent = `攻撃: ${attackPlayers}｜守備: ${defensePlayers}`;
+            item.appendChild(teamInfo);
+
+            content.appendChild(item);
+          });
+
+          // トグルボタンをクリックしたときに表示内容を切り替える
+          toggle.addEventListener("click", () => {
+            content.classList.toggle("hidden");
+          });
+
+          section.appendChild(toggle);
+          section.appendChild(content);
+          container.appendChild(section);
         });
-
-        // トグルボタンをクリックしたときに表示内容を切り替える
-        toggle.addEventListener("click", () => {
-          content.classList.toggle("hidden");
-        });
-
-        section.appendChild(toggle);
-        section.appendChild(content);
-        container.appendChild(section);
+      })
+      .catch(error => {
+        console.error("エラー発生:", error);
+        document.getElementById("statsContainer").textContent = "データの読み込みに失敗しました。";
       });
-    })
-    .catch(error => {
-      console.error("エラー発生:", error);
-      document.getElementById("statsContainer").textContent = "データの読み込みに失敗しました。";
-    });
-</script>
+  </script>
 </body>
 </html>
