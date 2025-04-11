@@ -6,47 +6,101 @@
   <title>箱鯖攻城戦</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* アニメーション用のクラス */
+    /* トグル展開アニメーション */
     .toggle-content {
       max-height: 0;
-      overflow: hidden;
       opacity: 0;
-      transition: max-height 0.6s ease, opacity 0.4s ease;
+      overflow: hidden;
+      transition: max-height 0.6s ease-out, opacity 0.4s ease;
     }
+
     .toggle-content.open {
       max-height: 1000px;
       opacity: 1;
     }
+
+    /* ボタンのスタイル */
+    .btn {
+      padding: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 12px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* ボタン色 */
+    .btn-stats {
+      background-color: #4C8BF5;
+      color: white;
+    }
+
+    .btn-stats:hover {
+      background-color: #3877d1;
+    }
+
+    .btn-classes {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .btn-classes:hover {
+      background-color: #218838;
+    }
+
+    /* セクションタイトル */
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .summary-text {
+      font-size: 1rem;
+      color: #555;
+    }
+
+    /* レスポンシブ対応 */
+    @media (max-width: 640px) {
+      .btn {
+        width: 100%;
+      }
+    }
   </style>
 </head>
-<body class="bg-gray-100 text-gray-800 min-h-screen">
+<body class="bg-gray-100 text-gray-800 min-h-screen flex items-center justify-center">
 
-  <div class="p-6">
+  <div class="w-full max-w-4xl p-8 space-y-8 bg-white rounded-lg shadow-lg">
     <!-- タイトル -->
-    <h1 class="text-3xl font-bold mb-6">🏯 箱鯖攻城戦</h1>
+    <h1 class="text-4xl font-bold text-center text-blue-600">🏯 箱鯖攻城戦</h1>
 
     <!-- メニューボタン -->
     <div class="space-y-4">
-      <button id="toggleStatsBtn" class="w-48 h-20 text-xl font-semibold bg-blue-500 text-white rounded-xl shadow hover:bg-blue-600 transition">
+      <button id="toggleStatsBtn" class="btn btn-stats w-full text-xl">
         試合統計
       </button>
-      <button class="w-48 h-20 text-xl font-semibold bg-green-500 text-white rounded-xl shadow hover:bg-green-600 transition">
+      <button class="btn btn-classes w-full text-xl">
         クラス説明
       </button>
     </div>
 
     <!-- トグル表示：試合統計データ -->
-    <div id="statsSection" class="toggle-content mt-8">
-      <div id="statsContainer" class="max-w-3xl mx-auto space-y-4"></div>
+    <div id="statsSection" class="toggle-content">
+      <div id="statsContainer" class="space-y-6"></div>
     </div>
   </div>
 
   <script>
     // トグル動作
-    const toggleBtn = document.getElementById("toggleStatsBtn");
+    const toggleStatsBtn = document.getElementById("toggleStatsBtn");
     const statsSection = document.getElementById("statsSection");
 
-    toggleBtn.addEventListener("click", () => {
+    toggleStatsBtn.addEventListener("click", () => {
       statsSection.classList.toggle("open");
     });
 
@@ -72,42 +126,38 @@
 
         Object.entries(data).forEach(([datetime, matches]) => {
           const section = document.createElement("div");
-          section.className = "bg-white rounded-xl shadow-md border border-gray-200";
+          section.className = "bg-gray-100 p-6 rounded-lg shadow-md";
 
-          const toggle = document.createElement("button");
-          toggle.className = "w-full px-6 py-4 bg-gray-100 hover:bg-gray-200 text-left text-lg font-semibold tracking-wide";
-          toggle.textContent = `🗓️ ${datetime}`;
+          const sectionTitle = document.createElement("h2");
+          sectionTitle.className = "section-title";
+          sectionTitle.textContent = `🗓️ ${datetime}`;
 
           const content = document.createElement("div");
-          content.className = "toggle-content px-6 py-4 space-y-4 bg-white";
+          content.className = "toggle-content";
 
           matches.forEach(match => {
-            const item = document.createElement("div");
-            item.className = "border-b pb-4";
+            const matchInfo = document.createElement("div");
+            matchInfo.className = "border-b pb-4";
 
             const summary = document.createElement("p");
-            summary.className = "text-base font-medium text-gray-800 mb-1";
+            summary.className = "summary-text";
             summary.innerHTML = `
               🏆 勝利チーム: ${match.winningTeam}　｜　🔴 攻撃キル数: ${match.redKill}　🔵 守備キル数: ${match.blueKill}<br>
               🕒 残り時間: ${match.remainingTime}秒　｜　🧱 コア耐久値: ${match.coreDurability}
             `;
 
             const teamInfo = document.createElement("p");
-            teamInfo.className = "text-sm text-gray-600 mt-1";
+            teamInfo.className = "summary-text mt-2";
             const attack = formatPlayers(match.teams["攻撃"]);
             const defense = formatPlayers(match.teams["守備"]);
             teamInfo.innerHTML = `🟥 攻撃:<br>${attack}<br><br>🟦 守備:<br>${defense}`;
 
-            item.appendChild(summary);
-            item.appendChild(teamInfo);
-            content.appendChild(item);
+            matchInfo.appendChild(summary);
+            matchInfo.appendChild(teamInfo);
+            content.appendChild(matchInfo);
           });
 
-          toggle.addEventListener("click", () => {
-            content.classList.toggle("open");
-          });
-
-          section.appendChild(toggle);
+          section.appendChild(sectionTitle);
           section.appendChild(content);
           container.appendChild(section);
         });
