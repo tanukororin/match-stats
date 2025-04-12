@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
-      background-color: #1a1a1a;
+      background: linear-gradient(135deg, #1a1a1a, #2c2c2c);
     }
     .toggle-content {
       transition: max-height 0.4s ease, opacity 0.4s ease;
@@ -20,31 +20,30 @@
       opacity: 1;
     }
     .glass {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       backdrop-filter: blur(10px);
     }
   </style>
 </head>
-<body class="text-white min-h-screen flex flex-col items-start px-6 py-10">
-
+<body class="text-white min-h-screen flex flex-col items-center px-6 py-10 bg-gradient-to-b from-gray-800 via-gray-900 to-black">
   <!-- タイトル -->
-  <h1 class="text-4xl font-bold mb-10">🏯 箱鯖攻城戦</h1>
+  <h1 class="text-4xl font-bold mb-10 drop-shadow-lg text-center">🏯 箱鯖攻城戦</h1>
 
   <!-- メニューボタン -->
   <div class="space-y-4 mb-10">
-    <button id="toggleStatsBtn" class="w-60 h-16 text-lg font-medium rounded-xl glass hover:bg-white hover:bg-opacity-10 transition">
+    <button id="toggleStatsBtn" class="w-60 h-16 text-lg font-medium rounded-xl glass hover:bg-purple-500 hover:bg-opacity-30 transition-all shadow-lg">
       📊 試合統計
     </button>
-    <button class="w-60 h-16 text-lg font-medium rounded-xl glass hover:bg-white hover:bg-opacity-10 transition">
+    <button class="w-60 h-16 text-lg font-medium rounded-xl glass hover:bg-teal-500 hover:bg-opacity-30 transition-all shadow-lg">
       📘 クラス説明
     </button>
   </div>
 
   <!-- 統計セクション -->
-  <div id="statsSection" class="toggle-content w-full">
-    <div id="statsContainer" class="space-y-6 w-full max-w-4xl">
-      <!-- 統計カードはここに動的に追加される -->
+  <div id="statsSection" class="toggle-content w-full max-w-4xl">
+    <div id="statsContainer" class="space-y-6 w-full">
+      <!-- 統計カードが動的にここへ追加されます -->
     </div>
   </div>
 
@@ -76,7 +75,7 @@
 
         Object.entries(data).forEach(([datetime, matches]) => {
           const section = document.createElement("div");
-          section.className = "rounded-xl glass border border-white border-opacity-10 overflow-hidden";
+          section.className = "rounded-xl glass border border-white border-opacity-20 overflow-hidden shadow-lg";
 
           const toggle = document.createElement("button");
           toggle.className = "w-full px-6 py-4 text-left text-lg font-semibold tracking-wide hover:bg-white hover:bg-opacity-10 transition";
