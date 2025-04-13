@@ -29,6 +29,45 @@
       <!-- 統計カードが動的にここへ追加されます -->
     </div>
   </div>
-<script src="scripts.js" defrt></script>
+
+  <script>
+    // WebSocket接続
+    const ws = new WebSocket("ws://" + location.host);
+
+    ws.onopen = function() {
+      console.log("WebSocket接続が確立されました。");
+    };
+
+    ws.onmessage = function(event) {
+      const statsData = JSON.parse(event.data);  // サーバーから受け取ったデータ（JSON形式）をパース
+
+      // 受け取った試合統計を画面に表示
+      const statsContainer = document.getElementById("statsContainer");
+      statsContainer.innerHTML = "";  // 以前のデータをクリア
+
+      statsData.forEach(stat => {
+        // 各統計データをカード形式で追加
+        const statCard = document.createElement("div");
+        statCard.classList.add("p-6", "bg-gray-700", "rounded-xl", "shadow-lg");
+        statCard.innerHTML = `
+          <h3 class="text-xl font-semibold">${stat.title}</h3>
+          <p>${stat.value}</p>
+        `;
+        statsContainer.appendChild(statCard);
+      });
+    };
+
+    ws.onclose = function() {
+      console.log("WebSocket接続が切断されました。");
+    };
+
+    // 試合統計表示ボタンのクリックイベント
+    document.getElementById("toggleStatsBtn").addEventListener("click", function() {
+      const statsSection = document.getElementById("statsSection");
+      statsSection.classList.toggle("hidden");  // 統計セクションの表示・非表示を切り替え
+    });
+  </script>
+
+  <script src="scripts.js" defer></script>
 </body>
 </html>
