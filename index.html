@@ -43,34 +43,38 @@
   </div>
 
   <script>
-    const toggleBtn = document.getElementById("toggleStatsBtn");
-    const statsSection = document.getElementById("statsSection");
+    // ボタンとセクションの取得
+const toggleBtn = document.getElementById("toggleStatsBtn");
+const statsSection = document.getElementById("statsSection");
 
-    toggleBtn?.addEventListener("click", () => {
-      statsSection.classList.toggle("open");
-    });
+// トグルボタンのクリックイベント
+toggleBtn.addEventListener("click", () => {
+  statsSection.classList.toggle("open");
+  console.log("統計セクションの開閉がトグルされました");
+});
 
-    document.getElementById("refreshBtn").addEventListener("click", () => {
-      location.reload(); // ページをリロード
-    });
+// プレイヤーデータのフォーマット関数
+function formatPlayers(playersObj) {
+  const entries = Object.entries(playersObj);
+  const lines = [];
+  for (let i = 0; i < entries.length; i += 2) {
+    const line = entries.slice(i, i + 2).map(([name, cls]) => `${name}（${cls}）`).join("、");
+    lines.push(line);
+  }
+  return lines.join("<br>");
+}
 
-    function formatPlayers(playersObj) {
-      const entries = Object.entries(playersObj);
-      const lines = [];
-      for (let i = 0; i < entries.length; i += 2) {
-        const line = entries.slice(i, i + 2).map(([name, cls]) => `${name}（${cls}）`).join("、");
-        lines.push(line);
-      }
-      return lines.join("<br>");
-    }
-
-    fetch("/match-stats/stats.json")
+// データの取得と描画
+fetch("/match-stats/stats.json")
   .then(response => {
     if (!response.ok) throw new Error("ファイルの読み込みに失敗しました。");
+    console.log("stats.jsonが正常に読み込まれました");
     return response.json();
   })
   .then(data => {
     const container = document.getElementById("statsContainer");
+    console.log("取得したデータ:", data);
+
     Object.entries(data).forEach(([datetime, matches]) => {
       const section = document.createElement("div");
       section.className = "rounded-xl glass border border-white border-opacity-20 overflow-hidden shadow-lg";
