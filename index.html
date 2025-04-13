@@ -29,14 +29,16 @@
       <!-- 統計カードが動的にここへ追加されます -->
     </div>
   </div>
+  <div class="container">
+    <h1>試合統計データを送信</h1>
 
-  <script>
-    // 試合統計表示ボタンのクリックイベント
-    document.getElementById("toggleStatsBtn").addEventListener("click", function() {
-      const statsSection = document.getElementById("statsSection");
-      statsSection.classList.toggle("hidden");  // 統計セクションの表示・非表示を切り替え
-    });
-  </script>
+    <label for="jsonInput">コピーした試合統計データを貼り付けてください:</label>
+    <textarea id="jsonInput" rows="10" placeholder="ここにJSONデータを貼り付けてください"></textarea>
+    
+    <button id="sendButton">送信</button>
+    
+    <div id="statusMessage"></div>
+  </div>
 
   <script src="scripts.js" defer></script>
 </body>
