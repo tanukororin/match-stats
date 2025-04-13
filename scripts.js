@@ -73,3 +73,24 @@ fetch("/match-stats/stats.json")
     console.error("エラー:", error);
     document.getElementById("statsContainer").textContent = "データの読み込みに失敗しました。";
   });
+
+function sendStats() {
+  const statsData = document.getElementById('statsData').value;
+
+  fetch('https://your-glitch-server-url/update-stats', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ stats: statsData }),
+  })
+  .then(response => response.json())
+  .then(data => {
+    alert('統計データが正常に送信されました！');
+  })
+  .catch(error => {
+    console.error('エラー:', error);
+    alert('データ送信に失敗しました。');
+  });
+}
+
