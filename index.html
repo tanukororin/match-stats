@@ -49,7 +49,8 @@
       try {
         const parsed = JSON.parse(jsonInput);
 
-        fetch("https://your-server-endpoint.com/api/update-stats", {
+        // サーバーエンドポイント（GlitchのURLに変更）
+        fetch("https://your-glitch-project.glitch.me/api/update-stats", {  // GlitchのURLに置き換える
           method: "POST",
           headers: {
             "Content-Type": "application/json"
