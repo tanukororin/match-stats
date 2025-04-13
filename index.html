@@ -29,17 +29,52 @@
       <!-- 統計カードが動的にここへ追加されます -->
     </div>
   </div>
-  <div class="container">
-    <h1>試合統計データを送信</h1>
 
-    <label for="jsonInput">コピーした試合統計データを貼り付けてください:</label>
-    <textarea id="jsonInput" rows="10" placeholder="ここにJSONデータを貼り付けてください"></textarea>
-    
-    <button id="sendButton">送信</button>
-    
-    <div id="statusMessage"></div>
+  <!-- 投稿フォーム -->
+  <div class="w-full max-w-2xl mt-10">
+    <h2 class="text-xl font-bold mb-2">📤 統計データをアップロード</h2>
+    <textarea id="jsonInput" class="w-full h-40 p-3 bg-gray-800 rounded-md text-sm" placeholder='ここにJSON文字列を貼り付け'></textarea>
+    <button id="submitJson" class="mt-3 px-4 py-2 bg-yellow-600 rounded hover:bg-yellow-700 transition">
+      🚀 送信
+    </button>
+    <p id="submitMessage" class="mt-2 text-sm"></p>
   </div>
 
   <script src="scripts.js" defer></script>
+  <script>
+    document.getElementById("submitJson").addEventListener("click", () => {
+      const jsonInput = document.getElementById("jsonInput").value.trim();
+      const message = document.getElementById("submitMessage");
+
+      try {
+        const parsed = JSON.parse(jsonInput);
+
+        fetch("https://your-server-endpoint.com/api/update-stats", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(parsed)
+        })
+        .then(res => {
+          if (res.ok) {
+            message.textContent = "✅ アップロードに成功しました！";
+            message.style.color = "lightgreen";
+          } else {
+            throw new Error("サーバーエラー");
+          }
+        })
+        .catch(err => {
+          message.textContent = "❌ アップロード中にエラーが発生しました。";
+          message.style.color = "red";
+          console.error(err);
+        });
+
+      } catch (err) {
+        message.textContent = "⚠️ JSONの形式が正しくありません。";
+        message.style.color = "orange";
+      }
+    });
+  </script>
 </body>
 </html>
