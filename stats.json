@@ -39,24 +39,5 @@
       "remainingTime": 0,
       "coreDurability": 80
     }
-  ],
-  "2025-04-11 14:22": [
-    {
-      "winningTeam": "攻撃",
-      "teams": {
-        "攻撃": {
-          "mikan": "Mage",
-          "sora": "Knight"
-        },
-        "守備": {
-          "yuki": "Cleric",
-          "riku": "Defender"
-        }
-      },
-      "redKill": 15,
-      "blueKill": 9,
-      "remainingTime": 60,
-      "coreDurability": 0
-    }
   ]
 }
